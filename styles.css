@@ -1,0 +1,14 @@
+table {
+  border: 1px solid black;
+  background-color: #0066dd;
+}
+
+td {
+  background-color: #44AAff;
+  width: 20px;
+  height: 20px;
+}
+
+.snake {
+  background-color: red;
+}
