@@ -1,16 +1,17 @@
 const size = 20
+var points = 0
 
 const apple = {
-  x: 0,
-  y: 19
+  x: Math.floor(Math.random()*19),
+  y: Math.floor(Math.random()*19)
 }
 
 const snake = {
-  x: 11,
-  y: 5,
+  x: 10,
+  y: 10,
   dir: 2,     // 0=up, 1=right, 2=down, 3=left
   length: 1,  // number of blocks
-  speed: 100 // ms
+  speed: 400 // ms
 }
 
 // BOARD STATES // 0-empty, 1-snake, 2-apple
@@ -44,8 +45,33 @@ function moveSnake() {
   if (snake.dir===3) { snake.x = snake.x === 0 ? size-1 : snake.x-1 }
 }
 
+function newApplePosition() {
+  do {
+    apple.x = Math.floor(Math.random()*19)
+    apple.y = Math.floor(Math.random()*19)
+  } while (Math.abs(snake.x-apple.x) < 5 || Math.abs(snake.y-apple.y) < 5)
+}
+
+function makeFaster() {
+  clearInterval(timerId)
+  if (snake.speed > 50) {
+    snake.speed = Math.round(snake.speed * 0.9)
+  }
+  timerId = setInterval(animate, snake.speed)
+}
+function checkEat() {
+  if (snake.x === apple.x && snake.y === apple.y) {
+    newApplePosition()
+    // Serpiente Crece
+    points += 100
+    makeFaster()
+    // Sonido de VICTORIA!
+  }
+}
+
 function newPosition() {
   moveSnake()
+  checkEat()
   board[snake.y][snake.x] = 1
   board[apple.y][apple.x] = 2
 }
@@ -56,7 +82,8 @@ function animate() {
   printBoard()
 }
 
-//setInterval(animate, snake.speed)
+var timerId = setInterval(animate, snake.speed)
+
 document.addEventListener('keyup', function (event) {
   if (event.code === 'ArrowUp')    { snake.dir = 0 }
   if (event.code === 'ArrowRight') { snake.dir = 1 }
