@@ -1,3 +1,7 @@
+const sounds = {
+  appleEat: new Audio('./sounds/apple-eat.wav')
+}
+
 const size = 20
 var points = 0
 
@@ -7,8 +11,9 @@ const apple = {
 }
 
 const snake = {
-  x: 10,
-  y: 10,
+  pos: [
+    { x: 10, y: 10, }
+  ],
   dir: 2,     // 0=up, 1=right, 2=down, 3=left
   length: 1,  // number of blocks
   speed: 400 // ms
@@ -24,10 +29,12 @@ function printBoard() {
 
       const elem = document.querySelector(`.row${r + 1}>.col${c + 1}`)
       elem.classList.remove('snake')
+      elem.classList.remove('snake-power')
       elem.classList.remove('apple')
 
       if (board[r][c] === 1) { elem.classList.add('snake') }
       if (board[r][c] === 2) { elem.classList.add('apple') }
+      if (board[r][c] === 3) { elem.classList.add('snake-power') }
     })
   })
 }
@@ -39,10 +46,14 @@ function cleanBoard() {
 
 function moveSnake() {
   // snake.dir ==> 0=up, 1=right, 2=down, 3=left
-  if (snake.dir===0) { snake.y = snake.y === 0 ? size-1 : snake.y-1 }
-  if (snake.dir===1) { snake.x = snake.x === size-1 ? 0 : snake.x+1 }
-  if (snake.dir===2) { snake.y = snake.y === size-1 ? 0 : snake.y+1 }
-  if (snake.dir===3) { snake.x = snake.x === 0 ? size-1 : snake.x-1 }
+  const newSnake = { x: snake.pos[0].x, y: snake.pos[0].y }
+
+  if (snake.dir===0) { newSnake.y = snake.pos[0].y === 0 ? size-1 : snake.pos[0].y-1 }
+  if (snake.dir===1) { newSnake.x = snake.pos[0].x === size-1 ? 0 : snake.pos[0].x+1 }
+  if (snake.dir===2) { newSnake.y = snake.pos[0].y === size-1 ? 0 : snake.pos[0].y+1 }
+  if (snake.dir===3) { newSnake.x = snake.pos[0].x === 0 ? size - 1 : snake.pos[0].x - 1 }
+  snake.pos.unshift(newSnake)
+  snake.pos.pop()
 }
 
 function newApplePosition() {
@@ -59,20 +70,32 @@ function makeFaster() {
   }
   timerId = setInterval(animate, snake.speed)
 }
+
+function snakeGrows() {
+  snake.pos.push({x: snake.pos[0].x, y: snake.pos[0].y})
+}
+
+function increasePoints() {
+  points += 100
+  document.getElementById('points').innerText = points
+}
+
 function checkEat() {
-  if (snake.x === apple.x && snake.y === apple.y) {
+  if (snake.pos[0].x === apple.x && snake.pos[0].y === apple.y) {
     newApplePosition()
-    // Serpiente Crece
-    points += 100
+    snakeGrows()
+    increasePoints()
     makeFaster()
-    // Sonido de VICTORIA!
+    sounds.appleEat.play()
   }
 }
 
 function newPosition() {
   moveSnake()
   checkEat()
-  board[snake.y][snake.x] = 1
+  snake.pos.forEach((pos,idx) => {
+    board[pos.y][pos.x] = idx === 0 ? 3 : 1
+  })
   board[apple.y][apple.x] = 2
 }
 

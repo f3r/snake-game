@@ -1,6 +1,23 @@
+header {
+  box-sizing: border-box;
+  background-color: #0066dd;
+  color: white;
+  width: 840px;
+  margin: auto;
+  padding: 10px;
+  margin-bottom: 10px;
+  -webkit-box-shadow: 10px 10px 36px 2px rgba(109,98,199,1);
+  -moz-box-shadow: 10px 10px 36px 2px rgba(109,98,199,1);
+  box-shadow: 10px 10px 36px 2px rgba(109,98,199,1);
+}
+
 table {
   border: 1px solid black;
   background-color: #0066dd;
+  margin: auto;
+  -webkit-box-shadow: 10px 10px 36px 2px rgba(109,98,199,1);
+  -moz-box-shadow: 10px 10px 36px 2px rgba(109,98,199,1);
+  box-shadow: 10px 10px 36px 2px rgba(109,98,199,1);
 }
 
 td {
@@ -11,6 +28,9 @@ td {
 
 .snake {
   background-color: greenyellow;
+}
+.snake-power {
+  background-color: rgb(20, 91, 0);
 }
 
 .apple {
